@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import {
-  Phone, Zap, ShieldCheck, Rocket,
-  MousePointerClick, BarChart3, ChevronRight,
-  Check, X
+  Phone, Home, Headphones, AudioLines,
+  Settings, LogOut, Heart, Gift, Wallet, Sun, Moon
 } from 'lucide-react';
 import { supabase } from './lib/supabase';
 import type { Session } from '@supabase/supabase-js';
