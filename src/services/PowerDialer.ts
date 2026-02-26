@@ -28,9 +28,9 @@ export interface DialerStats {
 
 export class PowerDialerService {
     private _status: DialerStatus = 'idle';
-    private campaignId: string = '';
-    private tenantId: string = '';
-    private userId: string = '';
+    // private campaignId: string = '';
+    // private tenantId: string = '';
+    // private userId: string = '';
     private queue: PowerDialQueue[] = [];
     private currentContact: CampaignContact | null = null;
     private events: Partial<DialerEvents> = {};
@@ -47,9 +47,9 @@ export class PowerDialerService {
     }
 
     async loadCampaign(campaignId: string, tenantId: string, userId: string): Promise<void> {
-        this.campaignId = campaignId;
-        this.tenantId = tenantId;
-        this.userId = userId;
+        // this.campaignId = campaignId;
+        // this.tenantId = tenantId;
+        // this.userId = userId;
 
         // Carregar contatos pendentes
         const { data: contacts } = await supabase
@@ -159,7 +159,7 @@ export class PowerDialerService {
         }
     }
 
-    private handleCallEnd(item: PowerDialQueue): void {
+    private handleCallEnd(_item: PowerDialQueue): void {
         this.updateStats();
         this.setStatus('wrap_up');
 

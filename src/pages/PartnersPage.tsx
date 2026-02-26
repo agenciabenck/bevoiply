@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {
     Gift, Users, Copy, Check, TrendingUp, DollarSign,
-    Share2, ArrowRight, ExternalLink
+    Share2, ExternalLink
 } from 'lucide-react';
 
 const tiers = [

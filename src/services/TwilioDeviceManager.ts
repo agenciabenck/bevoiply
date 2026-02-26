@@ -19,10 +19,10 @@ interface DeviceEvents {
 export class TwilioDeviceManager {
     private device: any = null;
     private connection: any = null;
-    private token: string = '';
-    private identity: string = '';
-    private tenantId: string = '';
-    private userId: string = '';
+    // private token: string = '';
+    // private identity: string = '';
+    // private tenantId: string = '';
+    // private userId: string = '';
     private events: Partial<DeviceEvents> = {};
     private tokenRefreshTimer: ReturnType<typeof setTimeout> | null = null;
     private _status: DeviceStatus = 'offline';
@@ -64,14 +64,14 @@ export class TwilioDeviceManager {
             if (!response.ok) throw new Error('Falha ao obter token Twilio');
 
             const data = await response.json();
-            this.token = data.token;
-            this.identity = data.identity;
-            this.tenantId = data.tenant_id;
-            this.userId = data.user_id;
+            // this.token = data.token;
+            // this.identity = data.identity;
+            // this.tenantId = data.tenant_id;
+            // this.userId = data.user_id;
 
             // Simular registro do device (em produção, usar @twilio/voice-sdk)
             this.setStatus('registered');
-            console.log(`[TwilioDevice] Registrado como ${this.identity}`);
+            console.log(`[TwilioDevice] Registrado`);
 
             // Agendar refresh do token (50 min antes de expirar)
             this.scheduleTokenRefresh();
