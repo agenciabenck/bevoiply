@@ -23,7 +23,7 @@ export interface TenantUser {
     display_name: string;
     extension?: string;
     is_active: boolean;
-    twilio_identity?: string;
+    // twilio_identity?: string;
     created_at: string;
 }
 
@@ -51,7 +51,7 @@ export interface Call {
     id: string;
     tenant_id: string;
     user_id: string;
-    twilio_call_sid?: string;
+    external_call_id?: string; // Telnyx call_control_id or Twilio SID
     direction: CallDirection;
     status: CallStatus;
     from_number: string;
@@ -78,7 +78,7 @@ export interface CallRecording {
     id: string;
     call_id: string;
     tenant_id: string;
-    twilio_recording_sid?: string;
+    external_recording_id?: string;
     storage_path?: string;
     storage_url?: string;
     duration_seconds: number;

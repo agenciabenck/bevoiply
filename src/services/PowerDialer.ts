@@ -3,7 +3,7 @@
 // Discagem automática em sequência
 // =============================================
 import { supabase } from '../lib/supabase';
-import { twilioDevice } from './TwilioDeviceManager';
+import { sipService } from '../lib/sipService';
 import type { CampaignContact, PowerDialQueue } from '../types';
 
 export type DialerStatus = 'idle' | 'running' | 'paused' | 'wrap_up';
@@ -97,7 +97,7 @@ export class PowerDialerService {
         const current = this.queue.find(q => q.status === 'dialing' || q.status === 'active');
         if (current) {
             current.status = 'skipped';
-            twilioDevice.hangup();
+            sipService.hangup();
         }
         if (this._status === 'running') {
             await this.dialNext();
@@ -139,17 +139,28 @@ export class PowerDialerService {
         this.events.onQueueUpdate?.(this.queue);
 
         try {
-            await twilioDevice.makeCall(nextItem.contact.phone_number);
+            await sipService.makeApiCall('ERIK_BENCK', nextItem.contact.phone_number);
 
-            // Monitorar resultado da chamada
-            twilioDevice.on('onConnectionStatusChange', (status) => {
-                if (status === 'open') {
+            // Simulação de transição para o Power Dialer (já que chamadas via Edge Function não tem status de volta imediato)
+            setTimeout(() => {
+                if (this._status === 'running') {
                     nextItem.status = 'active';
-                } else if (status === 'closed') {
-                    nextItem.status = 'completed';
-                    this.handleCallEnd(nextItem);
+                    this.events.onQueueUpdate?.(this.queue);
+
+                    // Auto-avanço simplificado para o Power Dialer (em modo demonstração)
+                    setTimeout(() => {
+                        nextItem.status = 'completed';
+                        this.updateStats();
+                        this.setStatus('wrap_up');
+                        setTimeout(() => {
+                            if (this._status === 'wrap_up') {
+                                this.setStatus('running');
+                                this.dialNext();
+                            }
+                        }, 5000); // 5s de wrap-up
+                    }, 10000); // 10s de conversa simulada
                 }
-            });
+            }, 1000);
 
         } catch (err) {
             nextItem.status = 'completed';
@@ -157,19 +168,6 @@ export class PowerDialerService {
             // Tentar próximo após delay
             this.autoDialTimer = setTimeout(() => this.dialNext(), this.autoDialDelay);
         }
-    }
-
-    private handleCallEnd(_item: PowerDialQueue): void {
-        this.updateStats();
-        this.setStatus('wrap_up');
-
-        // Auto-avanço após wrap-up
-        this.wrapUpTimer = setTimeout(() => {
-            if (this._status === 'wrap_up') {
-                this.setStatus('running');
-                this.dialNext();
-            }
-        }, this.wrapUpDuration);
     }
 
     private updateStats(): void {
