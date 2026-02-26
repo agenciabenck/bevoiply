@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import {
-  Phone, Home, Headphones, AudioLines,
-  Settings, LogOut, Heart, Gift, Wallet, Sun, Moon
+  Phone, Zap, ShieldCheck, Rocket,
+  MousePointerClick, BarChart3, ChevronRight,
+  Check, X
 } from 'lucide-react';
 import { supabase } from './lib/supabase';
 import type { Session } from '@supabase/supabase-js';
+import LandingPage from './pages/LandingPage';
 import AuthPage from './pages/AuthPage';
 import DashboardPage from './pages/DashboardPage';
 import SoftphonePage from './pages/SoftphonePage';
@@ -15,7 +17,7 @@ import PlansPage from './pages/PlansPage';
 import ProfilePage from './pages/ProfilePage';
 import './index.css';
 
-type Page = 'dashboard' | 'softphone' | 'dialer' | 'audio' | 'partners' | 'plans' | 'profile';
+type Page = 'landing' | 'dashboard' | 'softphone' | 'dialer' | 'audio' | 'partners' | 'plans' | 'profile';
 
 function App() {
   const [session, setSession] = useState<Session | null>(null);
@@ -211,11 +213,16 @@ function App() {
     );
   }
 
-  // Not logged in -> show auth page
+  const [showAuth, setShowAuth] = useState(false);
+
+  // Not logged in -> show landing page or auth page
   if (!session) {
-    return <AuthPage onAuth={() => {
-      supabase.auth.getSession().then(({ data: { session } }) => setSession(session));
-    }} />;
+    if (showAuth) {
+      return <AuthPage onAuth={() => {
+        supabase.auth.getSession().then(({ data: { session } }) => setSession(session));
+      }} />;
+    }
+    return <LandingPage onGetStarted={() => setShowAuth(true)} />;
   }
 
   return (
