@@ -63,7 +63,8 @@ export class TwilioDeviceManager {
 
             if (!response.ok) throw new Error('Falha ao obter token Twilio');
 
-            const data = await response.json();
+            await response.json();
+            // const data = await response.json();
             // this.token = data.token;
             // this.identity = data.identity;
             // this.tenantId = data.tenant_id;
